@@ -1,5 +1,5 @@
-using Microsoft.EntityFrameworkCore;
 using backend.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend.Database
 {
@@ -7,11 +7,29 @@ namespace backend.Database
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-        // Definição das tabelas
-        public DbSet<Usuario> Usuarios { get; set; }
+         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Produto> Produtos { get; set; }
         public DbSet<Categoria> Categorias { get; set; }
         public DbSet<Movimentacao> Movimentacoes { get; set; }
+
+        
+    }
+}
+
+// using Microsoft.EntityFrameworkCore;
+// using backend.Models;
+
+// namespace backend.Database
+// {
+//     public class AppDbContext : DbContext
+//     {
+//         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+
+//         // Definição das tabelas
+//         public DbSet<Usuario> Usuarios { get; set; }
+//         public DbSet<Produto> Produtos { get; set; }
+//         public DbSet<Categoria> Categorias { get; set; }
+//         public DbSet<Movimentacao> Movimentacoes { get; set; }
 
         // Método initialize (seed) para popular o banco de dados
 
@@ -37,5 +55,5 @@ namespace backend.Database
         //         context.SaveChanges();
         //     }
         // }
-    }
-}
+//     }
+// }
