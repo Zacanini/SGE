@@ -15,5 +15,7 @@ namespace backend.Models
 
         // Relacionamento com tabela categoria
         public int CategoriaId { get; set; }
+        [JsonIgnore]
+        public Categoria? Categoria { get; set; }
     }
 }

@@ -16,13 +16,13 @@ namespace backend.Services
         // Service  🆗
         public async Task<List<Produto>> GetAllAsync()
         {
-            return await _context.Produtos.Include(p => p.CategoriaId).ToListAsync();
+            return await _context.Produtos.Include(p => p.Categoria).ToListAsync();
         }
 
         // Service  🆗
         public async Task<Produto> GetByIdAsync(int id)
         {
-            return await _context.Produtos.Include(p => p.CategoriaId).FirstOrDefaultAsync(p => p.Id == id);
+            return await _context.Produtos.Include(p => p.Categoria).FirstOrDefaultAsync(p => p.Id == id);
         }
 
         // Service  🆗

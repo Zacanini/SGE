@@ -13,11 +13,13 @@ namespace backend.Services
             _context = context;
         }
 
+        // Service  🆗
         public async Task<List<Categoria>> GetAllAsync()
         {
             return await _context.Categorias.ToListAsync();
         }
 
+        // Service  🆗
         public async Task<Categoria> CreateAsync(Categoria categoria)
         {
             _context.Categorias.Add(categoria);

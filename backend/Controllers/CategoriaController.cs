@@ -15,14 +15,14 @@ namespace backend.Controllers
             _categoriaService = categoriaService;
         }
 
-        [HttpGet]
+        [HttpGet] // endpoint 🆗
         public async Task<IActionResult> GetAllCategorias()
         {
             var categorias = await _categoriaService.GetAllAsync();
             return Ok(categorias);
         }
 
-        [HttpPost]
+        [HttpPost] // endpoint 🆗
         public async Task<IActionResult> CreateCategoria(Categoria categoria)
         {
             var createdCategoria = await _categoriaService.CreateAsync(categoria);

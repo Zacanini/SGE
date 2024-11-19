@@ -13,6 +13,7 @@ namespace backend.Services
             _context = context;
         }
 
+        // Service  🆗
         public async Task<List<Movimentacao>> GetAllAsync()
         {
             return await _context.Movimentacoes
@@ -20,6 +21,8 @@ namespace backend.Services
                 .ToListAsync();
         }
 
+
+        // Service  🆗
         public async Task<Movimentacao> CreateAsync(Movimentacao movimentacao)
         {
             _context.Movimentacoes.Add(movimentacao);
