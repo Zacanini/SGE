@@ -4,6 +4,13 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// CORS
+builder.Services.AddCors(options => {
+   options.AddPolicy("AllowFrontend", policy => {
+        policy.WithOrigins("http://localhost:5173").AllowAnyHeader().AllowAnyMethod();
+   }); 
+});
+
 // Registra o contexto do Entity Framework com sqlite 3
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -32,5 +39,6 @@ var app = builder.Build();
 //     return Results.Created($"/api/produtos/{produto.Id}", produto);
 // });
 
+app.UseCors("AllowFrontend");
 app.MapControllers();
 app.Run();
