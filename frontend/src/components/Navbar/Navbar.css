@@ -1,0 +1,13 @@
+.navbar {
+    background: var(--gray-800);
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    border-bottom: 1px solid var(--green-500);
+}
+
+.navbar img {
+    height: 2rem;
+}
