@@ -37,5 +37,23 @@ namespace backend.Services
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public async Task<bool> UpdateAsync(Usuario usuario)
+        {
+            var existingUsuario = await _context.Usuarios.FindAsync(usuario.Id);
+            if (existingUsuario == null)
+            {
+                return false;
+            }
+
+            existingUsuario.Nome = usuario.Nome;
+            existingUsuario.Email = usuario.Email;
+            existingUsuario.SenhaHash = usuario.SenhaHash;
+            existingUsuario.Role = usuario.Role;
+
+            _context.Usuarios.Update(existingUsuario);
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }

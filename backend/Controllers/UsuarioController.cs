@@ -29,6 +29,23 @@ namespace backend.Controllers
             return CreatedAtAction(nameof(GetAllUsuarios), new { id = createdUsuario.Id }, createdUsuario);
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUsuario(int id, Usuario usuario)
+        {
+            if (id != usuario.Id)
+            {
+                return BadRequest();
+            }
+
+            var result = await _usuarioService.UpdateAsync(usuario);
+            if (!result)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUsuario(int id)
         {
@@ -41,4 +58,6 @@ namespace backend.Controllers
         }
 
     }
+
+
 }

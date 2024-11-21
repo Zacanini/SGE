@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getAllUsuarios, createUsuario, deleteUsuario } from '../services/usuarioService';
+import { getAllUsuarios, createUsuario, deleteUsuario, updateUsuario } from '../services/usuarioService';
 import { Navbar } from "../components/Navbar/Navbar";
 import { Header } from "../components/Header/Header";
 import { Container, TextField, Button, MenuItem, Select, InputLabel, FormControl, Box, Typography, List, ListItem, ListItemText, Modal, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
@@ -8,7 +8,9 @@ const Usuario = () => {
   const [usuarios, setUsuarios] = useState([]);
   const [newUsuario, setNewUsuario] = useState({ Nome: '', Email: '', SenhaHash: '', Role: 'funcionario' });
   const [modalOpen, setModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
   const [modalSearchTerm, setModalSearchTerm] = useState('');
+  const [selectedUsuario, setSelectedUsuario] = useState({ Nome: '', Email: '', SenhaHash: '', Role: 'funcionario' });
 
   useEffect(() => {
     fetchUsuarios();
@@ -26,13 +28,18 @@ const Usuario = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      await createUsuario(newUsuario);
-      fetchUsuarios();
-      setNewUsuario({ Nome: '', Email: '', SenhaHash: '', Role: 'funcionario' });
-      alert("Usuário adicionado com sucesso!");
-    } catch (error) {
-      console.error("Erro ao criar usuário:", error);
+    const senha = prompt("Digite a senha para confirmar a adição:");
+    if (senha === "senha123") { // Substitua "senha123" pela senha correta
+      try {
+        await createUsuario(newUsuario);
+        fetchUsuarios();
+        setNewUsuario({ Nome: '', Email: '', SenhaHash: '', Role: 'funcionario' });
+        alert("Usuário adicionado com sucesso!");
+      } catch (error) {
+        console.error("Erro ao criar usuário:", error);
+      }
+    } else {
+      alert("Senha incorreta!");
     }
   };
 
@@ -55,6 +62,33 @@ const Usuario = () => {
     }
   };
 
+  const handleEdit = (usuario) => {
+    setSelectedUsuario(usuario);
+    setEditModalOpen(true);
+  };
+
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    const senha = prompt("Digite a senha para confirmar a edição:");
+    if (senha === "senha123") { // Substitua "senha123" pela senha correta
+      try {
+        await updateUsuario(selectedUsuario.id, selectedUsuario);
+        fetchUsuarios();
+        setEditModalOpen(false);
+        alert("Usuário atualizado com sucesso!");
+      } catch (error) {
+        console.error("Erro ao atualizar usuário:", error);
+      }
+    } else {
+      alert("Senha incorreta!");
+    }
+  };
+
+  const handleEditChange = (e) => {
+    const { name, value } = e.target;
+    setSelectedUsuario({ ...selectedUsuario, [name]: value });
+  };
+
   const filteredModalUsuarios = usuarios.filter(usuario =>
     usuario.nome && usuario.nome.toLowerCase().includes(modalSearchTerm.toLowerCase())
   );
@@ -65,9 +99,9 @@ const Usuario = () => {
       <Header>
         <Container maxWidth="md">
           <Typography variant="h4" component="h1" gutterBottom>
-            Usuários
+            Gerenciar Usuarios
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2, backgroundColor: '#f5f5f5', padding: 3, borderRadius: 2 }}>
             <TextField
               label="Nome"
               variant="outlined"
@@ -129,7 +163,7 @@ const Usuario = () => {
         aria-labelledby="modal-title"
         aria-describedby="modal-description"
       >
-        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '80%', bgcolor: 'background.paper', boxShadow: 24, p: 4 }}>
+        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '80%', bgcolor: '#f5f5f5', boxShadow: 24, p: 4, borderRadius: 2 }}>
           <Typography id="modal-title" variant="h6" component="h2">
             Lista de Usuários
           </Typography>
@@ -161,8 +195,11 @@ const Usuario = () => {
                     <TableCell>{usuario.email}</TableCell>
                     <TableCell>{usuario.role}</TableCell>
                     <TableCell>
-                      <Button variant="contained" color="secondary" onClick={() => handleDelete(usuario.id)}>
+                      <Button variant="contained" color="secondary" onClick={() => handleDelete(usuario.id)} sx={{ mr: 2 }}>
                         Deletar
+                      </Button>
+                      <Button variant="contained" color="primary" onClick={() => handleEdit(usuario)}>
+                        Editar
                       </Button>
                     </TableCell>
                   </TableRow>
@@ -170,6 +207,73 @@ const Usuario = () => {
               </TableBody>
             </Table>
           </TableContainer>
+        </Box>
+      </Modal>
+
+      <Modal
+        open={editModalOpen}
+        onClose={() => setEditModalOpen(false)}
+        aria-labelledby="edit-modal-title"
+        aria-describedby="edit-modal-description"
+      >
+        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '80%', bgcolor: '#f5f5f5', boxShadow: 24, p: 4, borderRadius: 2 }}>
+          <Typography id="edit-modal-title" variant="h6" component="h2">
+            Editar Usuário
+          </Typography>
+          {selectedUsuario && (
+            <Box component="form" onSubmit={handleEditSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <TextField
+                label="Nome"
+                variant="outlined"
+                name="Nome"
+                value={selectedUsuario.Nome}
+                onChange={handleEditChange}
+                fullWidth
+                InputProps={{
+                  style: { backgroundColor: 'white' },
+                }}
+              />
+              <TextField
+                label="Email"
+                variant="outlined"
+                name="Email"
+                value={selectedUsuario.Email}
+                onChange={handleEditChange}
+                fullWidth
+                InputProps={{
+                  style: { backgroundColor: 'white' },
+                }}
+              />
+              <TextField
+                label="Senha"
+                type="password"
+                variant="outlined"
+                name="SenhaHash"
+                value={selectedUsuario.SenhaHash}
+                onChange={handleEditChange}
+                fullWidth
+                InputProps={{
+                  style: { backgroundColor: 'white' },
+                }}
+              />
+              <FormControl variant="outlined" fullWidth>
+                <InputLabel>Role</InputLabel>
+                <Select
+                  name="Role"
+                  value={selectedUsuario.Role}
+                  onChange={handleEditChange}
+                  label="Role"
+                  style={{ backgroundColor: 'white' }}
+                >
+                  <MenuItem value="funcionario">Funcionário</MenuItem>
+                  <MenuItem value="gerente">Gerente</MenuItem>
+                </Select>
+              </FormControl>
+              <Button type="submit" variant="contained" color="primary">
+                Atualizar Usuário
+              </Button>
+            </Box>
+          )}
         </Box>
       </Modal>
     </>

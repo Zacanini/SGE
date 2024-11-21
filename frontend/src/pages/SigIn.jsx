@@ -3,6 +3,7 @@ import { TextField, Button, Container, Typography, Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
 import { getAllUsuarios } from "../services/usuarioService";
+import { Navbar } from "../components/Navbar/Navbar"; 
 
 const SignIn = () => {
     const [login, setLogin] = useState("");
@@ -41,6 +42,8 @@ const SignIn = () => {
     };
 
     return (
+        <>
+            <Navbar/>
         <Container maxWidth="xs">
             <Box
                 display="flex"
@@ -93,6 +96,7 @@ const SignIn = () => {
                 </form>
             </Box>
         </Container>
+        </>
     );
 };
 
