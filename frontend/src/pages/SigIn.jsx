@@ -1,19 +1,42 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { TextField, Button, Container, Typography, Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../contexts/AuthContext";
+import { getAllUsuarios } from "../services/usuarioService";
 
 const SignIn = () => {
     const [login, setLogin] = useState("");
     const [senha, setSenha] = useState("");
+    const [error, setError] = useState("");
     const navigate = useNavigate();
+    const { login: loginUser } = useContext(AuthContext);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if (login === "admin" && senha === "admin") {
-            sessionStorage.setItem("loggedIn", true); // Salva o estado de login no sessionStorage
-            navigate("/home"); // Redireciona para a página inicial
-        } else {
-            alert("Credenciais inválidas");
+        setError("");
+
+        try {
+            const usuarios = await getAllUsuarios();
+            const listaUsuarios = usuarios.$values;
+
+            if (!listaUsuarios || listaUsuarios.length === 0) {
+                setError("Nenhum usuário encontrado.");
+                return;
+            }
+
+            const usuarioValido = listaUsuarios.find(
+                (user) => user.email === login && user.senhaHash === senha
+            );
+
+            if (usuarioValido) {
+                loginUser(usuarioValido);
+                navigate("/home");
+            } else {
+                setError("Credenciais inválidas.");
+            }
+        } catch (err) {
+            console.error("Erro ao verificar login:", err);
+            setError("Ocorreu um erro ao conectar com o servidor. Tente novamente.");
         }
     };
 
@@ -29,6 +52,11 @@ const SignIn = () => {
                 <Typography variant="h4" component="h1" gutterBottom>
                     Conectar
                 </Typography>
+                {error && (
+                    <Typography variant="body2" color="error" gutterBottom>
+                        {error}
+                    </Typography>
+                )}
                 <form onSubmit={handleSubmit}>
                     <TextField
                         label="Login"
@@ -38,7 +66,7 @@ const SignIn = () => {
                         value={login}
                         onChange={(e) => setLogin(e.target.value)}
                         InputProps={{
-                            style: { backgroundColor: 'white' }
+                            style: { backgroundColor: 'white' },
                         }}
                     />
                     <TextField
@@ -50,7 +78,7 @@ const SignIn = () => {
                         value={senha}
                         onChange={(e) => setSenha(e.target.value)}
                         InputProps={{
-                            style: { backgroundColor: 'white' }
+                            style: { backgroundColor: 'white' },
                         }}
                     />
                     <Button

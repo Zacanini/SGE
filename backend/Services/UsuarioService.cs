@@ -24,5 +24,18 @@ namespace backend.Services
             await _context.SaveChangesAsync();
             return usuario;
         }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var usuario = await _context.Usuarios.FindAsync(id);
+            if (usuario == null)
+            {
+                return false;
+            }
+
+            _context.Usuarios.Remove(usuario);
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }

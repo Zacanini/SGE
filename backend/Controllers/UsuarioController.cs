@@ -28,5 +28,17 @@ namespace backend.Controllers
             var createdUsuario = await _usuarioService.CreateAsync(usuario);
             return CreatedAtAction(nameof(GetAllUsuarios), new { id = createdUsuario.Id }, createdUsuario);
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUsuario(int id)
+        {
+            var result = await _usuarioService.DeleteAsync(id);
+            if (!result)
+            {
+                return NotFound();
+            }
+            return NoContent();
+        }
+
     }
 }
