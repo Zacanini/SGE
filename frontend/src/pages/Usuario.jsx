@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { getAllUsuarios, createUsuario, deleteUsuario, updateUsuario } from '../services/usuarioService';
 import { Navbar } from "../components/Navbar/Navbar";
 import { Header } from "../components/Header/Header";
-import { Container, TextField, Button, MenuItem, Select, InputLabel, FormControl, Box, Typography, List, ListItem, ListItemText, Modal, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import { AuthContext } from "../contexts/AuthContext";
+import { Container, TextField, Button, MenuItem, Select, InputLabel, FormControl, Box, Typography, Modal, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 
 const Usuario = () => {
+  const { isGerente } = useContext(AuthContext);
   const [usuarios, setUsuarios] = useState([]);
   const [newUsuario, setNewUsuario] = useState({ Nome: '', Email: '', SenhaHash: '', Role: 'funcionario' });
   const [modalOpen, setModalOpen] = useState(false);
@@ -63,7 +65,13 @@ const Usuario = () => {
   };
 
   const handleEdit = (usuario) => {
-    setSelectedUsuario(usuario);
+    setSelectedUsuario({
+      id: usuario.id,
+      Nome: usuario.nome,
+      Email: usuario.email,
+      SenhaHash: usuario.senhaHash,
+      Role: usuario.role,
+    });
     setEditModalOpen(true);
   };
 
@@ -163,7 +171,7 @@ const Usuario = () => {
         aria-labelledby="modal-title"
         aria-describedby="modal-description"
       >
-        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '80%', bgcolor: '#f5f5f5', boxShadow: 24, p: 4, borderRadius: 2 }}>
+        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '80%', maxHeight: '80vh', overflowY: 'auto', bgcolor: '#f5f5f5', boxShadow: 24, p: 4, borderRadius: 2 }}>
           <Typography id="modal-title" variant="h6" component="h2">
             Lista de Usuários
           </Typography>
@@ -195,9 +203,11 @@ const Usuario = () => {
                     <TableCell>{usuario.email}</TableCell>
                     <TableCell>{usuario.role}</TableCell>
                     <TableCell>
-                      <Button variant="contained" color="secondary" onClick={() => handleDelete(usuario.id)} sx={{ mr: 2 }}>
-                        Deletar
-                      </Button>
+                      {isGerente && (
+                        <Button variant="contained" color="secondary" onClick={() => handleDelete(usuario.id)} sx={{ mr: 2 }}>
+                          Deletar
+                        </Button>
+                      )}
                       <Button variant="contained" color="primary" onClick={() => handleEdit(usuario)}>
                         Editar
                       </Button>
@@ -216,7 +226,7 @@ const Usuario = () => {
         aria-labelledby="edit-modal-title"
         aria-describedby="edit-modal-description"
       >
-        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '80%', bgcolor: '#f5f5f5', boxShadow: 24, p: 4, borderRadius: 2 }}>
+        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '80%', maxHeight: '80vh', overflowY: 'auto', bgcolor: '#f5f5f5', boxShadow: 24, p: 4, borderRadius: 2 }}>
           <Typography id="edit-modal-title" variant="h6" component="h2">
             Editar Usuário
           </Typography>
