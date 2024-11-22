@@ -4,7 +4,12 @@ import { getAllProdutos, createProduto, deleteProduto, updateProduto } from "../
 import { Navbar } from "../components/Navbar/Navbar";
 import { Header } from "../components/Header/Header";
 import { AuthContext } from "../contexts/AuthContext";
-import { Container, TextField, Button, MenuItem, Select, InputLabel, FormControl, Box, Typography, Modal, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
+import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import UpdateIcon from '@mui/icons-material/Update';
+import { Container, TextField, Button, MenuItem, Select, InputLabel, FormControl, Box, Typography, Modal, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, styled } from '@mui/material';
 
 const Produto = () => {
   const { isGerente } = useContext(AuthContext);
@@ -150,9 +155,11 @@ const Produto = () => {
       <Header>
         <Container maxWidth="md">
           <Typography variant="h4" component="h1" gutterBottom>
-            Adicionar Produto
+            Adicionar Produto {<Button startIcon={<SearchIcon />} style={{marginBottom:'12px' , marginLeft:'200px'}} onClick={() => setModalOpen(true)} variant="contained" color="primary" sx={{ mt: 2 }}>
+              Buscar Produtos
+            </Button>}
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2, backgroundColor: '#f5f5f5', padding: 3, borderRadius: 2 }}>
+          <Box name="SeçãoAddProduto" component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2, backgroundColor: '#f5f5f5', padding: 3, borderRadius: 2 }}>
             <TextField
               label="Código"
               variant="outlined"
@@ -238,13 +245,8 @@ const Produto = () => {
                 ))}
               </Select>
             </FormControl>
-            <Button type="submit" variant="contained" color="primary">
+            <Button startIcon={<AddIcon/>} type="submit" variant="contained" color="primary">
               Adicionar Produto
-            </Button>
-          </Box>
-          <Box sx={{ mt: 4 }}>
-            <Button onClick={() => setModalOpen(true)} variant="contained" color="primary" sx={{ mt: 2 }}>
-              Buscar Produtos
             </Button>
           </Box>
         </Container>
@@ -297,11 +299,11 @@ const Produto = () => {
                     <TableCell>{produto.categoriaId}</TableCell>
                     <TableCell>
                       {isGerente && (
-                        <Button variant="contained" color="secondary" onClick={() => handleDelete(produto.id)} sx={{ mr: 2 }}>
+                        <Button startIcon={<DeleteIcon/>} variant="contained" color="secondary" onClick={() => handleDelete(produto.id)} sx={{ mr: 2 }}>
                           Deletar
                         </Button>
                       )}
-                      <Button variant="contained" color="primary" onClick={() => handleEdit(produto)}>
+                      <Button startIcon={<EditIcon/>} variant="contained" color="primary" onClick={() => handleEdit(produto)}>
                         Editar
                       </Button>
                     </TableCell>
@@ -420,7 +422,7 @@ const Produto = () => {
                   ))}
                 </Select>
               </FormControl>
-              <Button type="submit" variant="contained" color="primary">
+              <Button startIcon={<UpdateIcon/>} type="submit" variant="contained" color="primary">
                 Atualizar Produto
               </Button>
             </Box>

@@ -4,6 +4,11 @@ import { Navbar } from "../components/Navbar/Navbar";
 import { Header } from "../components/Header/Header";
 import { AuthContext } from "../contexts/AuthContext";
 import { Container, TextField, Button, MenuItem, Select, InputLabel, FormControl, Box, Typography, Modal, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
+import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import UpdateIcon from '@mui/icons-material/Update';
 
 const Usuario = () => {
   const { isGerente } = useContext(AuthContext);
@@ -153,12 +158,12 @@ const Usuario = () => {
                 <MenuItem value="gerente">Gerente</MenuItem>
               </Select>
             </FormControl>
-            <Button type="submit" variant="contained" color="primary">
+            <Button  startIcon={<AddIcon/>} type="submit" variant="contained" color="primary">
               Adicionar Usuário
             </Button>
           </Box>
           <Box sx={{ mt: 4 }}>
-            <Button onClick={() => setModalOpen(true)} variant="contained" color="primary" sx={{ mt: 2 }}>
+            <Button startIcon={<SearchIcon />} onClick={() => setModalOpen(true)} variant="contained" color="primary" sx={{ mt: 2 }}>
               Buscar Usuários
             </Button>
           </Box>
@@ -204,11 +209,11 @@ const Usuario = () => {
                     <TableCell>{usuario.role}</TableCell>
                     <TableCell>
                       {isGerente && (
-                        <Button variant="contained" color="secondary" onClick={() => handleDelete(usuario.id)} sx={{ mr: 2 }}>
+                        <Button startIcon={<DeleteIcon/>} variant="contained" color="secondary" onClick={() => handleDelete(usuario.id)} sx={{ mr: 2 }}>
                           Deletar
                         </Button>
                       )}
-                      <Button variant="contained" color="primary" onClick={() => handleEdit(usuario)}>
+                      <Button startIcon={<EditIcon/>} variant="contained" color="primary" onClick={() => handleEdit(usuario)}>
                         Editar
                       </Button>
                     </TableCell>
@@ -279,7 +284,7 @@ const Usuario = () => {
                   <MenuItem value="gerente">Gerente</MenuItem>
                 </Select>
               </FormControl>
-              <Button type="submit" variant="contained" color="primary">
+              <Button startIcon={<UpdateIcon/>} type="submit" variant="contained" color="primary">
                 Atualizar Usuário
               </Button>
             </Box>

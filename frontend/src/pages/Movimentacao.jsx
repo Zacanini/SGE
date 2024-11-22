@@ -4,6 +4,8 @@ import { getAllProdutos, updateProduto } from "../services/produtoService";
 import { Navbar } from "../components/Navbar/Navbar";
 import { Header } from "../components/Header/Header";
 import { Container, TextField, Button, MenuItem, Select, InputLabel, FormControl, Box, Typography, Modal, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import HistoryIcon from '@mui/icons-material/History';
 
 const Movimentacao = () => {
   const [movimentacoes, setMovimentacoes] = useState([]);
@@ -125,12 +127,12 @@ const Movimentacao = () => {
                 <MenuItem value="saida">Saída</MenuItem>
               </Select>
             </FormControl>
-            <Button type="submit" variant="contained" color="primary">
+            <Button startIcon={<AddIcon/>} type="submit" variant="contained" color="primary">
               Adicionar Movimentação
             </Button>
           </Box>
           <Box sx={{ mt: 4 }}>
-            <Button onClick={() => setModalOpen(true)} variant="contained" color="primary" sx={{ mt: 2 }}>
+            <Button startIcon={<HistoryIcon/>} onClick={() => setModalOpen(true)} variant="contained" color="primary" sx={{ mt: 2 }}>
               Ver Movimentações
             </Button>
           </Box>
