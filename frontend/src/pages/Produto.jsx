@@ -28,6 +28,7 @@ const Produto = () => {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [modalSearchTerm, setModalSearchTerm] = useState('');
   const [selectedProduto, setSelectedProduto] = useState({
+    id: "",
     Codigo: "",
     Nome: "",
     Descricao: "",
@@ -108,6 +109,7 @@ const Produto = () => {
 
   const handleEdit = (produto) => {
     setSelectedProduto({
+      id: produto.id,
       Codigo: produto.codigo,
       Nome: produto.nome,
       Descricao: produto.descricao,
