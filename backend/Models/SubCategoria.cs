@@ -2,11 +2,12 @@ using System.Text.Json.Serialization;
 
 namespace backend.Models
 {
-    public class Categoria
+    public class SubCategoria
     {
         public int Id { get; set; }
         public string? Nome { get; set; }
+        public int CategoriaId { get; set; }
         [JsonIgnore]
-        public List<SubCategoria>? SubCategorias { get; set; }
+        public Categoria? Categoria { get; set; }
     }
 }

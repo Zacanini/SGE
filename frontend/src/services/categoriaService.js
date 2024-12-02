@@ -11,3 +11,8 @@ export const createCategoria = async (categoria) => {
     const response = await axios.post(API_URL, categoria);
     return response.data;
 };
+
+export const deleteCategoria = async (id) => {
+    const response = await axios.delete(`${API_URL}/${id}`);
+    return response.status === 204;
+};

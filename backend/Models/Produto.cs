@@ -17,5 +17,10 @@ namespace backend.Models
         public int CategoriaId { get; set; }
         [JsonIgnore]
         public Categoria? Categoria { get; set; }
+
+        // Relacionamento com tabela subcategoria
+        public int SubCategoriaId { get; set; }
+        [JsonIgnore]
+        public SubCategoria? SubCategoria { get; set; }
     }
 }

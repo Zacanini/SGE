@@ -96,7 +96,7 @@ const Home = () => {
   };
 
   const getBorderColor = (estoqueAtual, estoqueMinimo) => {
-    if (estoqueAtual === 0) {
+    if (estoqueAtual <= 0) {
       return "red"; // Vermelho para itens sem estoque
     } else if (estoqueAtual <= estoqueMinimo) {
       return "yellow"; // Amarelo para estoques abaixo do mínimo
@@ -106,7 +106,7 @@ const Home = () => {
   };
 
   const getBackgroundColor = (estoqueAtual, estoqueMinimo) => {
-    if (estoqueAtual === 0) {
+    if (estoqueAtual <= 0) {
       return "rgba(255, 0, 0, 0.3)"; // Fundo vermelho claro para sem estoque
     } else if (estoqueAtual <= estoqueMinimo) {
       return "rgba(255, 255, 0, 0.3)"; // Fundo amarelo claro para estoques abaixo do mínimo

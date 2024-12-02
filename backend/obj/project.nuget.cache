@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "hiDZHK1LiSb3hOGtbvUgkLRG7WZkoD9Juwz+DC0BSNyfIDoQw/2JmBrhhFxL7Kz62h5k5zTrcRyTk9/PTbTXnA==",
+  "dgSpecHash": "zCYzwPEkhuUU/eHAit/QuZ7MUp4Z+XwiBBSyVsvj4AeJJfiXu/GOJpsbaypHlIHKX6/KY0kwsd+tHtjmQ0yfag==",
   "success": true,
-  "projectFilePath": "C:\\Users\\ledaz\\OneDrive\\Área de Trabalho\\exercicios 3 semestre\\SGE\\backend\\backend.csproj",
+  "projectFilePath": "C:\\Users\\ledaz\\OneDrive\\Área de Trabalho\\exercicios 3 semestre\\SGE(repoositorioIndividual)\\backend\\backend.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ledaz\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\ledaz\\.nuget\\packages\\microsoft.aspnetcore.openapi\\8.0.10\\microsoft.aspnetcore.openapi.8.0.10.nupkg.sha512",

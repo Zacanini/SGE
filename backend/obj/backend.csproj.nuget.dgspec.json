@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ledaz\\OneDrive\\Área de Trabalho\\exercicios 3 semestre\\SGE\\backend\\backend.csproj": {}
+    "C:\\Users\\ledaz\\OneDrive\\Área de Trabalho\\exercicios 3 semestre\\SGE(repoositorioIndividual)\\backend\\backend.csproj": {}
   },
   "projects": {
-    "C:\\Users\\ledaz\\OneDrive\\Área de Trabalho\\exercicios 3 semestre\\SGE\\backend\\backend.csproj": {
+    "C:\\Users\\ledaz\\OneDrive\\Área de Trabalho\\exercicios 3 semestre\\SGE(repoositorioIndividual)\\backend\\backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ledaz\\OneDrive\\Área de Trabalho\\exercicios 3 semestre\\SGE\\backend\\backend.csproj",
+        "projectUniqueName": "C:\\Users\\ledaz\\OneDrive\\Área de Trabalho\\exercicios 3 semestre\\SGE(repoositorioIndividual)\\backend\\backend.csproj",
         "projectName": "backend",
-        "projectPath": "C:\\Users\\ledaz\\OneDrive\\Área de Trabalho\\exercicios 3 semestre\\SGE\\backend\\backend.csproj",
+        "projectPath": "C:\\Users\\ledaz\\OneDrive\\Área de Trabalho\\exercicios 3 semestre\\SGE(repoositorioIndividual)\\backend\\backend.csproj",
         "packagesPath": "C:\\Users\\ledaz\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ledaz\\OneDrive\\Área de Trabalho\\exercicios 3 semestre\\SGE\\backend\\obj\\",
+        "outputPath": "C:\\Users\\ledaz\\OneDrive\\Área de Trabalho\\exercicios 3 semestre\\SGE(repoositorioIndividual)\\backend\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\ledaz\\AppData\\Roaming\\NuGet\\NuGet.Config"

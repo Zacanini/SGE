@@ -26,5 +26,18 @@ namespace backend.Services
             await _context.SaveChangesAsync();
             return categoria;
         }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var categoria = await _context.Categorias.FindAsync(id);
+            if (categoria == null)
+            {
+                return false;
+            }
+
+            _context.Categorias.Remove(categoria);
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }

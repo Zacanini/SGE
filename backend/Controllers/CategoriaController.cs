@@ -28,5 +28,16 @@ namespace backend.Controllers
             var createdCategoria = await _categoriaService.CreateAsync(categoria);
             return CreatedAtAction(nameof(GetAllCategorias), new { id = createdCategoria.Id }, createdCategoria);
         }
+
+        [HttpDelete("{id}")] // novo endpoint para deletar
+        public async Task<IActionResult> DeleteCategoria(int id)
+        {
+            var result = await _categoriaService.DeleteAsync(id);
+            if (!result)
+            {
+                return NotFound();
+            }
+            return NoContent();
+        }
     }
 }

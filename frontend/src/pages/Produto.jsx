@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useContext } from "react";
 import { getAllCategorias } from "../services/categoriaService";
+import { getAllSubCategorias } from "../services/subCategoriaService";
 import { getAllProdutos, createProduto, deleteProduto, updateProduto } from "../services/produtoService";
+import { createMovimentacao } from "../services/movimentacaoService"; // Importar a função de criação de movimentação
 import { Navbar } from "../components/Navbar/Navbar";
 import { Header } from "../components/Header/Header";
 import { AuthContext } from "../contexts/AuthContext";
@@ -9,12 +11,14 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import UpdateIcon from '@mui/icons-material/Update';
-import { Container, TextField, Button, MenuItem, Select, InputLabel, FormControl, Box, Typography, Modal, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, styled } from '@mui/material';
+import { Container, TextField, Button, MenuItem, Select, InputLabel, FormControl, Box, Typography, Modal, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 
 const Produto = () => {
   const { isGerente } = useContext(AuthContext);
   const [produtos, setProdutos] = useState([]);
   const [categorias, setCategorias] = useState([]);
+  const [subCategorias, setSubCategorias] = useState([]);
+  const [filteredSubCategorias, setFilteredSubCategorias] = useState([]);
   const [newProduto, setNewProduto] = useState({
     Codigo: "",
     Nome: "",
@@ -22,7 +26,8 @@ const Produto = () => {
     Preco: "",
     EstoqueAtual: 0,
     EstoqueMinimo: 0,
-    CategoriaId: ""
+    CategoriaId: "",
+    SubCategoriaId: ""
   });
   const [modalOpen, setModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
@@ -35,12 +40,14 @@ const Produto = () => {
     Preco: "",
     EstoqueAtual: 0,
     EstoqueMinimo: 0,
-    CategoriaId: ""
+    CategoriaId: "",
+    SubCategoriaId: ""
   });
 
   useEffect(() => {
     fetchProdutos();
     fetchCategorias();
+    fetchSubCategorias();
   }, []);
 
   const fetchProdutos = async () => {
@@ -62,12 +69,21 @@ const Produto = () => {
     }
   };
 
+  const fetchSubCategorias = async () => {
+    try {
+      const data = await getAllSubCategorias();
+      setSubCategorias(data.$values || []);
+    } catch (error) {
+      console.error("Erro ao buscar subcategorias", error);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const senha = prompt("Digite a senha para confirmar a adição:");
     if (senha === "senha123") { // Substitua "senha123" pela senha correta
       try {
-        await createProduto(newProduto);
+        const produtoCriado = await createProduto(newProduto);
         fetchProdutos();
         setNewProduto({
           Codigo: "",
@@ -76,9 +92,20 @@ const Produto = () => {
           Preco: "",
           EstoqueAtual: 0,
           EstoqueMinimo: 0,
-          CategoriaId: ""
+          CategoriaId: "",
+          SubCategoriaId: ""
         });
         alert("Produto adicionado com sucesso!");
+
+        // Criar uma movimentação de entrada
+        const movimentacao = {
+          ProdutoId: produtoCriado.id,
+          Quantidade: produtoCriado.estoqueAtual,
+          Tipo: "entrada",
+          Data: new Date().toISOString()
+        };
+        await createMovimentacao(movimentacao);
+        alert("Movimentação de entrada criada com sucesso!");
       } catch (error) {
         console.error("Erro ao adicionar produto", error);
       }
@@ -90,6 +117,17 @@ const Produto = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setNewProduto({ ...newProduto, [name]: value });
+  };
+
+  const handleSelectCategoria = (e) => {
+    const categoriaId = e.target.value;
+    setNewProduto({ ...newProduto, CategoriaId: categoriaId, SubCategoriaId: '' });
+    setFilteredSubCategorias(subCategorias.filter(sub => sub.categoriaId === categoriaId));
+  };
+
+  const handleSelectSubCategoria = (e) => {
+    const subCategoriaId = e.target.value;
+    setNewProduto({ ...newProduto, SubCategoriaId: subCategoriaId });
   };
 
   const handleDelete = async (id) => {
@@ -116,8 +154,10 @@ const Produto = () => {
       Preco: produto.preco,
       EstoqueAtual: produto.estoqueAtual,
       EstoqueMinimo: produto.estoqueMinimo,
-      CategoriaId: produto.categoriaId
+      CategoriaId: produto.categoriaId,
+      SubCategoriaId: produto.subCategoriaId
     });
+    setFilteredSubCategorias(subCategorias.filter(sub => sub.categoriaId === produto.categoriaId));
     setEditModalOpen(true);
   };
 
@@ -157,7 +197,7 @@ const Produto = () => {
       <Header>
         <Container maxWidth="md">
           <Typography variant="h4" component="h1" gutterBottom>
-            Adicionar Produto {<Button startIcon={<SearchIcon />} style={{marginBottom:'12px' , marginLeft:'200px'}} onClick={() => setModalOpen(true)} variant="contained" color="primary" sx={{ mt: 2 }}>
+            Adicionar Produto {<Button startIcon={<SearchIcon />} style={{ marginBottom: '12px', marginLeft: '200px' }} onClick={() => setModalOpen(true)} variant="contained" color="primary" sx={{ mt: 2 }}>
               Buscar Produtos
             </Button>}
           </Typography>
@@ -236,7 +276,7 @@ const Produto = () => {
               <Select
                 name="CategoriaId"
                 value={newProduto.CategoriaId}
-                onChange={handleChange}
+                onChange={handleSelectCategoria}
                 label="Categoria"
                 style={{ backgroundColor: 'white' }}
               >
@@ -247,7 +287,23 @@ const Produto = () => {
                 ))}
               </Select>
             </FormControl>
-            <Button startIcon={<AddIcon/>} type="submit" variant="contained" color="primary">
+            <FormControl variant="outlined" fullWidth disabled={!newProduto.CategoriaId}>
+              <InputLabel>SubCategoria</InputLabel>
+              <Select
+                name="SubCategoriaId"
+                value={newProduto.SubCategoriaId}
+                onChange={handleSelectSubCategoria}
+                label="SubCategoria"
+                style={{ backgroundColor: 'white' }}
+              >
+                {filteredSubCategorias.map((subCategoria) => (
+                  <MenuItem key={subCategoria.id} value={subCategoria.id}>
+                    {subCategoria.nome}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <Button startIcon={<AddIcon />} type="submit" variant="contained" color="primary">
               Adicionar Produto
             </Button>
           </Box>
@@ -286,6 +342,7 @@ const Produto = () => {
                   <TableCell>Estoque Atual</TableCell>
                   <TableCell>Estoque Mínimo</TableCell>
                   <TableCell>Categoria</TableCell>
+                  <TableCell>SubCategoria</TableCell> {/* Adicione esta linha */}
                   <TableCell>Ações</TableCell>
                 </TableRow>
               </TableHead>
@@ -299,13 +356,14 @@ const Produto = () => {
                     <TableCell>{produto.estoqueAtual}</TableCell>
                     <TableCell>{produto.estoqueMinimo}</TableCell>
                     <TableCell>{produto.categoriaId}</TableCell>
+                    <TableCell>{produto.subCategoriaId}</TableCell> {/* Adicione esta linha */}
                     <TableCell>
                       {isGerente && (
-                        <Button startIcon={<DeleteIcon/>} variant="contained" color="secondary" onClick={() => handleDelete(produto.id)} sx={{ mr: 2 }}>
+                        <Button startIcon={<DeleteIcon />} variant="contained" color="secondary" onClick={() => handleDelete(produto.id)} sx={{ mr: 2 }}>
                           Deletar
                         </Button>
                       )}
-                      <Button startIcon={<EditIcon/>} variant="contained" color="primary" onClick={() => handleEdit(produto)}>
+                      <Button startIcon={<EditIcon />} variant="contained" color="primary" onClick={() => handleEdit(produto)}>
                         Editar
                       </Button>
                     </TableCell>
@@ -413,7 +471,10 @@ const Produto = () => {
                 <Select
                   name="CategoriaId"
                   value={selectedProduto.CategoriaId}
-                  onChange={handleEditChange}
+                  onChange={(e) => {
+                    handleEditChange(e);
+                    setFilteredSubCategorias(subCategorias.filter(sub => sub.categoriaId === e.target.value));
+                  }}
                   label="Categoria"
                   style={{ backgroundColor: 'white' }}
                 >
@@ -424,7 +485,23 @@ const Produto = () => {
                   ))}
                 </Select>
               </FormControl>
-              <Button startIcon={<UpdateIcon/>} type="submit" variant="contained" color="primary">
+              <FormControl variant="outlined" fullWidth disabled={!selectedProduto.CategoriaId}>
+                <InputLabel>SubCategoria</InputLabel>
+                <Select
+                  name="SubCategoriaId"
+                  value={selectedProduto.SubCategoriaId}
+                  onChange={handleEditChange}
+                  label="SubCategoria"
+                  style={{ backgroundColor: 'white' }}
+                >
+                  {filteredSubCategorias.map((subCategoria) => (
+                    <MenuItem key={subCategoria.id} value={subCategoria.id}>
+                      {subCategoria.nome}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <Button startIcon={<UpdateIcon />} type="submit" variant="contained" color="primary">
                 Atualizar Produto
               </Button>
             </Box>

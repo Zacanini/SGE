@@ -20,6 +20,7 @@ builder.Services.AddScoped<CategoriaService>();
 builder.Services.AddScoped<ProdutoService>();
 builder.Services.AddScoped<MovimentacaoService>();
 builder.Services.AddScoped<UsuarioService>();
+builder.Services.AddScoped<SubCategoriaService>(); // Adiciona o serviço SubCategoriaService
 
 // Registra os controladores (pasta controllers), evitando referência cíclicas (um referenciando o outro)
 builder.Services.AddControllers();
@@ -30,14 +31,6 @@ builder.Services.AddControllers().AddJsonOptions(options =>
  });
 
 var app = builder.Build();
-
-// Endpoint para inserção de dados na tabela "produtos" do banco de dados [TESTANDO CONEXÃO COM DATABASE] [Passar para 'ProdutosController']
-// app.MapPost("/api/produtos", async (Produto produto, AppDbContext dbContext) =>
-// {
-//     dbContext.Produtos.Add(produto);
-//     await dbContext.SaveChangesAsync();
-//     return Results.Created($"/api/produtos/{produto.Id}", produto);
-// });
 
 app.UseCors("AllowFrontend");
 app.MapControllers();

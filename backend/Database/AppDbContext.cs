@@ -7,12 +7,11 @@ namespace backend.Database
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-         public DbSet<Usuario> Usuarios { get; set; }
+        public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Produto> Produtos { get; set; }
         public DbSet<Categoria> Categorias { get; set; }
         public DbSet<Movimentacao> Movimentacoes { get; set; }
-
-        
+        public DbSet<SubCategoria> SubCategorias { get; set; } // Adiciona a tabela SubCategorias
     }
 }
 
