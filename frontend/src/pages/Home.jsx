@@ -13,7 +13,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { Box, Typography, Paper, Button, Popover, Grid, IconButton, Select, MenuItem } from "@mui/material";
+import { Box, Typography, Paper, Button, Popover, Grid, Select, MenuItem } from "@mui/material";
 import ListIcon from "@mui/icons-material/List";
 import TrophyIcon from "@mui/icons-material/EmojiEvents";
 
@@ -21,11 +21,13 @@ const Home = () => {
   const [movimentacoes, setMovimentacoes] = useState([]);
   const [produtos, setProdutos] = useState([]);
   const [chartData, setChartData] = useState([]);
+  const [chartDataMensal, setChartDataMensal] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const [vendasAnchorEl, setVendasAnchorEl] = useState(null);
   const [mesSelecionado, setMesSelecionado] = useState(new Date().getMonth());
   const [produtosMaisVendidos, setProdutosMaisVendidos] = useState([]);
   const [valorTotalVendas, setValorTotalVendas] = useState(0);
+  const [exibirGraficoMensal, setExibirGraficoMensal] = useState(false);
 
   useEffect(() => {
     fetchMovimentacoes();
@@ -34,6 +36,7 @@ const Home = () => {
 
   useEffect(() => {
     processarProdutosMaisVendidos(mesSelecionado);
+    processChartDataMensal(mesSelecionado);
   }, [movimentacoes, mesSelecionado]);
 
   const fetchMovimentacoes = async () => {
@@ -63,6 +66,26 @@ const Home = () => {
     });
 
     setChartData(movimentacoesPorMes);
+  };
+
+  const processChartDataMensal = (mes) => {
+    const movimentacoesPorDia = Array(31)
+      .fill(0)
+      .map((_, index) => ({
+        dia: index + 1,
+        saida: 0,
+      }));
+
+    movimentacoes.forEach((movimentacao) => {
+      const dataMovimentacao = new Date(movimentacao.data);
+      const mesMovimentacao = dataMovimentacao.getMonth();
+      if (movimentacao.tipo === "saida" && mesMovimentacao === mes) {
+        const dia = dataMovimentacao.getDate();
+        movimentacoesPorDia[dia - 1].saida += movimentacao.quantidade;
+      }
+    });
+
+    setChartDataMensal(movimentacoesPorDia);
   };
 
   const processarProdutosMaisVendidos = (mes) => {
@@ -115,6 +138,29 @@ const Home = () => {
     }
   };
 
+  const getEstoqueStatus = (quantidadeAtual, quantidadeMinima) => {
+    if (quantidadeAtual === 0) {
+      return {
+        cor: 'vermelha',
+        mensagem: `Quantidade Atual: ${quantidadeAtual}, Quantidade Mínima: ${quantidadeMinima}   ESTOQUE ZERADO, FAÇA AGORA O ABASTECIMENTO DESSE PRODUTO!`
+      };
+    } else if (quantidadeAtual <= quantidadeMinima) {
+      return {
+        cor: 'amarela',
+        mensagem: `Quantidade Atual: ${quantidadeAtual}, Quantidade Mínima: ${quantidadeMinima}   ESTOQUE ATUAL ABAIXO DO MÍNIMO ESTIPULADO, FAÇA O ABASTECIMENTO DESSE PRODUTO!`
+      };
+    } else if (quantidadeAtual <= quantidadeMinima + 5) {
+      return {
+        cor: 'verde',
+        mensagem: `Quantidade Atual: ${quantidadeAtual}, Quantidade Mínima: ${quantidadeMinima}   Estoque próximo do mínimo estipulado.`
+      };
+    } else {
+      return {
+        cor: 'default',
+        mensagem: `Quantidade Atual: ${quantidadeAtual}, Quantidade Mínima: ${quantidadeMinima}`
+      };
+    }
+  };
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -133,6 +179,10 @@ const Home = () => {
     setMesSelecionado(event.target.value);
   };
 
+  const toggleGrafico = () => {
+    setExibirGraficoMensal(!exibirGraficoMensal);
+  };
+
   const open = Boolean(anchorEl);
   const vendasOpen = Boolean(vendasAnchorEl);
   const id = open ? "simple-popover" : undefined;
@@ -142,14 +192,56 @@ const Home = () => {
     <>
       <Navbar />
       <Header>
-        <h1>Gráfico de vendas do mês</h1>
+        <h1>Gráfico de vendas</h1>
+        <Button
+          onClick={toggleGrafico}
+          variant="contained"
+          sx={{
+            backgroundColor: "#00B37E",
+            color: "#fff",
+            '&:hover': {
+              backgroundColor: "#00875F",
+            },
+            mb: 2,
+            mr: 2,
+          }}
+        >
+          {exibirGraficoMensal ? "Mostrar Gráfico Anual" : "Mostrar Gráfico Mensal"}
+        </Button>
+        {exibirGraficoMensal && (
+          <Select
+            value={mesSelecionado}
+            onChange={handleMesChange}
+            sx={{
+              mb: 2,
+              mr: 2,
+              backgroundColor: "#00B37E",
+              color: "#fff",
+              '& .MuiSelect-icon': {
+                color: "#fff",
+              },
+              '& .MuiOutlinedInput-notchedOutline': {
+                borderColor: "#00B37E",
+              },
+              '&:hover .MuiOutlinedInput-notchedOutline': {
+                borderColor: "#00875F",
+              },
+            }}
+          >
+            {Array.from({ length: 12 }, (_, index) => (
+              <MenuItem key={index} value={index}>
+                {new Date(0, index).toLocaleString("default", { month: "long" })}
+              </MenuItem>
+            ))}
+          </Select>
+        )}
         <ResponsiveContainer
           width="80%"
           height={400}
           style={{ marginTop: "25px" }}
         >
           <LineChart
-            data={chartData}
+            data={exibirGraficoMensal ? chartDataMensal : chartData}
             margin={{
               top: 25,
               right: 30,
@@ -159,7 +251,7 @@ const Home = () => {
             style={{ backgroundColor: "#ffffff", borderRadius: "8px" }}
           >
             <CartesianGrid stroke="#000000" strokeDasharray="1 1" />
-            <XAxis dataKey="mes" stroke="#000000" />
+            <XAxis dataKey={exibirGraficoMensal ? "dia" : "mes"} stroke="#000000" />
             <YAxis stroke="#000000" />
             <Tooltip />
             <Legend />
@@ -233,6 +325,7 @@ const Home = () => {
                 const falta = Math.max(
                   (produto.estoqueMinimo - produto.estoqueAtual) * (-1)
                 );
+                const estoqueStatus = getEstoqueStatus(produto.estoqueAtual, produto.estoqueMinimo);
                 return (
                   <Grid item xs={4} key={produto.id}>
                     <Paper
@@ -254,13 +347,7 @@ const Home = () => {
                         {produto.nome}
                       </Typography>
                       <Typography>
-                        Quantidade Atual: {produto.estoqueAtual}
-                      </Typography>
-                      <Typography>
-                        Quantidade Mínima: {produto.estoqueMinimo}
-                      </Typography>
-                      <Typography style={{ fontSize: '20px' }}>
-                        Falta para atingir a quantidade mínima: {falta}
+                        {estoqueStatus.mensagem}
                       </Typography>
                     </Paper>
                   </Grid>
