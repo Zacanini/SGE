@@ -17,10 +17,12 @@
 
     --yellow-500: #FBA94C;
 }
+@import url('./styles/fonts.css');
 
 * {
     padding: 0;
     margin: 0;
+    font-family:'CodecPro', Arial, sans-serif;
 }
 
 body {

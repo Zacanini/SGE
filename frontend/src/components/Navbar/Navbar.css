@@ -3,9 +3,11 @@
     height: 80px;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: center;    
     gap: 15px;
-    border-bottom: 1px solid var(--green-500);
+    position: sticky;
+    top: 0;
+    z-index: 999;
 }
 
 .navbar img {

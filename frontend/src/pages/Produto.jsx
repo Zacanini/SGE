@@ -191,6 +191,16 @@ const Produto = () => {
     produto.nome && produto.nome.toLowerCase().includes(modalSearchTerm.toLowerCase())
   );
 
+  const getCategoriaNome = (id) => {
+    const categoria = categorias.find(categoria => categoria.id === id);
+    return categoria ? categoria.nome : 'N/A';
+  };
+
+  const getSubCategoriaNome = (id) => {
+    const subCategoria = subCategorias.find(subCategoria => subCategoria.id === id);
+    return subCategoria ? subCategoria.nome : 'N/A';
+  };
+
   return (
     <>
       <Navbar />
@@ -355,8 +365,8 @@ const Produto = () => {
                     <TableCell>{produto.preco}</TableCell>
                     <TableCell>{produto.estoqueAtual}</TableCell>
                     <TableCell>{produto.estoqueMinimo}</TableCell>
-                    <TableCell>{produto.categoriaId}</TableCell>
-                    <TableCell>{produto.subCategoriaId}</TableCell> {/* Adicione esta linha */}
+                    <TableCell>{getCategoriaNome(produto.categoriaId)}</TableCell>
+                    <TableCell>{getSubCategoriaNome(produto.subCategoriaId)}</TableCell> {/* Adicione esta linha */}
                     <TableCell>
                       {isGerente && (
                         <Button startIcon={<DeleteIcon />} variant="contained" color="secondary" onClick={() => handleDelete(produto.id)} sx={{ mr: 2 }}>

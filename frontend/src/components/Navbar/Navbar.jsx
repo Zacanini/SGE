@@ -5,7 +5,7 @@ export function Navbar() {
     return (
         <nav className='navbar'>
             <img src={systemLogo} alt="Logotipo do sistema" />
-            <h1>Sistema de Gerenciamento de Estoque</h1>
+            <h1 style={{textAlign:'initial'}}>ZACANINI SYSTEMS <br /> gerenciamento de estoque</h1>
         </nav>
     );
 }

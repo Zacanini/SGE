@@ -32,6 +32,8 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 
 var app = builder.Build();
 
+
+
 app.UseCors("AllowFrontend");
 app.MapControllers();
 app.Run();
